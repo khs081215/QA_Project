@@ -1,0 +1,13 @@
+diff --git a/Source/AO/Private/UI/Widget/AO_MainMenuWidget.cpp b/Source/AO/Private/UI/Widget/AO_MainMenuWidget.cpp
+index aa4dd32..5d0c229 100644
+--- a/Source/AO/Private/UI/Widget/AO_MainMenuWidget.cpp
++++ b/Source/AO/Private/UI/Widget/AO_MainMenuWidget.cpp
+@@ -26,7 +26,7 @@ void UAO_MainMenuWidget::OnClicked_Host()
+ 	if (UAO_HostDialogWidget* Dialog = CreateWidget<UAO_HostDialogWidget>(GetWorld(), HostDialogClass))
+ 	{
+ 		Dialog->AddToViewport(200);
+-		Dialog->SetVisibility(ESlateVisibility::Hidden);
++		Dialog->SetVisibility(ESlateVisibility::Visible);
+ 		Dialog->SetIsFocusable(true);
+ 		AO_LOG(LogJSH, Log, TEXT("OnClicked_Host: HostDialog popup displayed"));
+ 	}

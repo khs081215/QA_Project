@@ -1,0 +1,47 @@
+diff --git a/Source/AO/Private/Item/invenroty/AO_InventoryComponent.cpp b/Source/AO/Private/Item/invenroty/AO_InventoryComponent.cpp
+index a73e3d9..f738a3e 100644
+--- a/Source/AO/Private/Item/invenroty/AO_InventoryComponent.cpp
++++ b/Source/AO/Private/Item/invenroty/AO_InventoryComponent.cpp
+@@ -125,25 +125,27 @@ void UAO_InventoryComponent::PickupItem(const FInventorySlot& IncomingItem, AAct
+         FInventorySlot OldSlot = Slots[SelectedSlotIndex];
+         Slots[SelectedSlotIndex] = IncomingItem;
+         
+-        AActor* OwnerActor = nullptr;
+-        FVector SpawnLocation = OwnerActor->GetActorLocation() + OwnerActor->GetActorForwardVector() * 60.f;
+-        FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation);
+-        
+-        AAO_MasterItem* DropItem = GetWorld()->SpawnActorDeferred<AAO_MasterItem>(
++        AActor* OwnerActor = GetOwner();
++       if (OwnerActor)
++       {
++           FVector SpawnLocation = OwnerActor->GetActorLocation() + OwnerActor->GetActorForwardVector() * 60.f;
++           FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation);
++           AAO_MasterItem* DropItem = GetWorld()->SpawnActorDeferred<AAO_MasterItem>(
+              DroppableItemClass ? DroppableItemClass.Get() : AAO_MasterItem::StaticClass(),
+-             SpawnTransform,
++            SpawnTransform,
+              GetOwner(),
+-             nullptr,
++        nullptr,
+              ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+-        );
+-
+-        if (DropItem)
+-        {
+-            DropItem->ItemID = OldSlot.ItemID; 
+-            UGameplayStatics::FinishSpawningActor(DropItem, SpawnTransform);
+-        }
++            );
++           if (DropItem)
++           {
++               DropItem->ItemID = OldSlot.ItemID; 
++               UGameplayStatics::FinishSpawningActor(DropItem, SpawnTransform);
++           }
+ 
+-        bPickupSuccess = true;
++           bPickupSuccess = true;
++       }
++        
+     }
+     if (bPickupSuccess && Instigator)
+     {

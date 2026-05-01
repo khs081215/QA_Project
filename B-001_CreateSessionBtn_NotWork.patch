@@ -1,0 +1,13 @@
+diff --git a/Source/AO/Private/Character/AO_PlayerCharacter.cpp b/Source/AO/Private/Character/AO_PlayerCharacter.cpp
+index 3454f86..0577fa1 100644
+--- a/Source/AO/Private/Character/AO_PlayerCharacter.cpp
++++ b/Source/AO/Private/Character/AO_PlayerCharacter.cpp
+@@ -499,7 +499,7 @@ void AAO_PlayerCharacter::StartJump()
+ 	}
+ 
+ 	AbilitySystemComponent->TryActivateAbilitiesByTag(
+-		FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Movement.Junp"))));
++		FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Movement.Jump"))));
+ }
+ 
+ void AAO_PlayerCharacter::TriggerJump()

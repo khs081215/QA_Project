@@ -1,0 +1,12 @@
+diff --git a/Source/AO/Private/AI/Controller/AO_AIControllerBase.cpp b/Source/AO/Private/AI/Controller/AO_AIControllerBase.cpp
+index bd630a3..d3c3429 100644
+--- a/Source/AO/Private/AI/Controller/AO_AIControllerBase.cpp
++++ b/Source/AO/Private/AI/Controller/AO_AIControllerBase.cpp
+@@ -41,6 +41,7 @@ void AAO_AIControllerBase::BeginPlay()
+ 	// Perception 이벤트 바인딩
+ 	if (AIPerceptionComponent)
+ 	{
++		AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAO_AIControllerBase::OnTargetPerceptionUpdated);
+ 	}
+ }
+ 

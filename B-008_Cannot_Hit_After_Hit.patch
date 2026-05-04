@@ -1,0 +1,13 @@
+diff --git a/Source/AO/Private/Character/Combat/Ability/AO_GameplayAbility_HitReact.cpp b/Source/AO/Private/Character/Combat/Ability/AO_GameplayAbility_HitReact.cpp
+index de17e47..c77998c 100644
+--- a/Source/AO/Private/Character/Combat/Ability/AO_GameplayAbility_HitReact.cpp
++++ b/Source/AO/Private/Character/Combat/Ability/AO_GameplayAbility_HitReact.cpp
+@@ -83,6 +83,8 @@ void UAO_GameplayAbility_HitReact::ActivateAbility(const FGameplayAbilitySpecHan
+ 		= UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, MontageToPlay);
+ 	checkf(MontageTask, TEXT("Failed to create MontageTask"));
+ 	
++	MontageTask->ReadyForActivation();
++	
+ 	MontageTask->OnCompleted.AddDynamic(this, &UAO_GameplayAbility_HitReact::OnMontageCompleted);
+ 	MontageTask->OnBlendOut.AddDynamic(this, &UAO_GameplayAbility_HitReact::OnMontageCompleted);
+ 	MontageTask->OnCancelled.AddDynamic(this, &UAO_GameplayAbility_HitReact::OnMontageCancelled);

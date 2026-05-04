@@ -1,0 +1,13 @@
+diff --git a/Source/AO/Private/Train/AO_TrainDoor.cpp b/Source/AO/Private/Train/AO_TrainDoor.cpp
+index 4e7a287..143a15e 100644
+--- a/Source/AO/Private/Train/AO_TrainDoor.cpp
++++ b/Source/AO/Private/Train/AO_TrainDoor.cpp
+@@ -52,7 +52,7 @@ void AAO_TrainDoor::Tick(float DeltaTime)
+ 
+ bool AAO_TrainDoor::CanInteraction(const FAO_InteractionQuery& InteractionQuery) const
+ {
+-    return false;
++    return Super::CanInteraction(InteractionQuery);
+ }
+ 
+ void AAO_TrainDoor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

@@ -1,0 +1,13 @@
+diff --git a/Source/AO/Private/Character/GAS/AO_PlayerCharacter_AttributeSet.cpp b/Source/AO/Private/Character/GAS/AO_PlayerCharacter_AttributeSet.cpp
+index c48f972..dcf8abc 100644
+--- a/Source/AO/Private/Character/GAS/AO_PlayerCharacter_AttributeSet.cpp
++++ b/Source/AO/Private/Character/GAS/AO_PlayerCharacter_AttributeSet.cpp
+@@ -48,7 +48,7 @@ void UAO_PlayerCharacter_AttributeSet::PostGameplayEffectExecute(const struct FG
+ 	{
+ 		const float NewHealth = GetHealth();
+ 		
+-		if (NewHealth < 0.f)
++		if (NewHealth <= 0.f)
+ 		{
+ 			if (!ASC->HasMatchingGameplayTag(DeathTag))
+ 			{

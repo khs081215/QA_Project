@@ -1,0 +1,129 @@
+diff --git a/Source/AO/Private/Online/AO_OnlineSessionSubsystem.cpp b/Source/AO/Private/Online/AO_OnlineSessionSubsystem.cpp
+index 2a3d971..4615162 100644
+--- a/Source/AO/Private/Online/AO_OnlineSessionSubsystem.cpp
++++ b/Source/AO/Private/Online/AO_OnlineSessionSubsystem.cpp
+@@ -607,6 +607,34 @@ void UAO_OnlineSessionSubsystem::JoinSessionByIndex(int32 Index)
+ 		return;
+ 	}
+ 
++	// 기존 세션이 남아있으면 먼저 파괴 후 재시도 (Dedicated Server / PIE Standalone 환경 대응)
++	if (Session->GetNamedSession(NAME_GameSession) != nullptr)
++	{
++		AO_LOG(LogJSH, Warning, TEXT("JoinSessionByIndex: Existing session detected, destroying before join (Index=%d)"), Index);
++
++		CachedInviteResult = LastSearchResults[Index];
++		bPendingInviteJoin = true;
++		bPendingRehost = false;
++
++		if (DestroyHandle.IsValid())
++		{
++			Session->ClearOnDestroySessionCompleteDelegate_Handle(DestroyHandle);
++			DestroyHandle.Reset();
++		}
++		DestroyHandle = Session->AddOnDestroySessionCompleteDelegate_Handle(
++			FOnDestroySessionCompleteDelegate::CreateUObject(this, &ThisClass::OnDestroyThenRecreateSession));
++
++		if (!Session->DestroySession(NAME_GameSession))
++		{
++			AO_LOG(LogJSH, Warning, TEXT("JoinSessionByIndex: DestroySession call failed, join canceled"));
++			Session->ClearOnDestroySessionCompleteDelegate_Handle(DestroyHandle);
++			DestroyHandle.Reset();
++			bPendingInviteJoin = false;
++			bOpInProgress = false;
++		}
++		return;
++	}
++
+ 	if (JoinHandle.IsValid())
+ 	{
+ 		Session->ClearOnJoinSessionCompleteDelegate_Handle(JoinHandle);
+@@ -662,6 +690,17 @@ void UAO_OnlineSessionSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoi
+ 		return;
+ 	}
+ 
++	// Null OSS(로컬 테스트)에서 LAN IP 대신 127.0.0.1 사용 (Windows Firewall 차단 방지)
++	if (IsNullOSS())
++	{
++		int32 ColonIndex;
++		if (ConnectString.FindChar(TEXT(':'), ColonIndex))
++		{
++			ConnectString = TEXT("127.0.0.1") + ConnectString.Mid(ColonIndex);
++			AO_LOG(LogJSH, Log, TEXT("OnJoinSessionComplete: Null OSS - overriding IP to 127.0.0.1 -> %s"), *ConnectString);
++		}
++	}
++
+ 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+ 	{
+ 		AO_LOG(LogJSH, Log, TEXT("OnJoinSessionComplete: ClientTravel to %s"), *ConnectString);
+@@ -1104,6 +1143,7 @@ void UAO_OnlineSessionSubsystem::FindSessionsAuto(int32 MaxResults)
+ /* ==================== Voice Chat (JM) ================ */
+ void UAO_OnlineSessionSubsystem::StartVoiceChat()
+ {
++	if (IsNullOSS()) { AO_LOG(LogJM, Log, TEXT("StartVoiceChat: Skipped (Null OSS)")); return; }
+ 	AO_LOG(LogJM, Log, TEXT("Start"));
+ 	IOnlineVoicePtr VoiceInterface = GetOnlineVoiceInterface();
+ 	if (!VoiceInterface.IsValid())
+@@ -1119,6 +1159,7 @@ void UAO_OnlineSessionSubsystem::StartVoiceChat()
+ 
+ void UAO_OnlineSessionSubsystem::StopVoiceChat()
+ {
++	if (IsNullOSS()) { AO_LOG(LogJM, Log, TEXT("StopVoiceChat: Skipped (Null OSS)")); return; }
+ 	AO_LOG(LogJM, Log, TEXT("Start"));
+ 	IOnlineVoicePtr VoiceInterface = GetOnlineVoiceInterface();
+ 	if (!VoiceInterface.IsValid())
+@@ -1141,6 +1182,7 @@ void UAO_OnlineSessionSubsystem::StopVoiceChat()
+ 
+ void UAO_OnlineSessionSubsystem::MuteRemoteTalker(const uint8 LocalUserNum, AAO_PlayerState* TargetPS, const bool bIsSystemWide)
+ {
++	if (IsNullOSS()) { return; }
+ 	AO_LOG(LogJM, Log, TEXT("Start"));
+ 
+ 	// TODO : ensure로 코드 리펙토링
+@@ -1206,6 +1248,7 @@ void UAO_OnlineSessionSubsystem::MuteRemoteTalker(const uint8 LocalUserNum, AAO_
+ 
+ void UAO_OnlineSessionSubsystem::UnmuteRemoteTalker(const uint8 LocalUserNum, AAO_PlayerState* TargetPS, const bool bIsSystemWide)
+ {
++	if (IsNullOSS()) { return; }
+ 	AO_LOG(LogJM, Log, TEXT("Start"));
+ 
+ 	if (!AO_ENSURE(TargetPS, TEXT("TargetPS is Null")))
+@@ -1270,6 +1313,7 @@ void UAO_OnlineSessionSubsystem::UnmuteRemoteTalker(const uint8 LocalUserNum, AA
+ 
+ void UAO_OnlineSessionSubsystem::MuteAllRemoteTalker()
+ {
++	if (IsNullOSS()) { return; }
+ 	AO_LOG(LogJM, Log, TEXT("Start"));
+ 	UWorld* World = GetWorld();
+ 	if (!AO_ENSURE(World, TEXT("World is Null")))
+@@ -1309,6 +1353,7 @@ void UAO_OnlineSessionSubsystem::MuteAllRemoteTalker()
+ 
+ void UAO_OnlineSessionSubsystem::UnmuteAllRemoteTalker()
+ {
++	if (IsNullOSS()) { return; }
+ 	AO_LOG(LogJM, Log, TEXT("Start"));
+ 	UWorld* World = GetWorld();
+ 	if (!AO_ENSURE(World, TEXT("World is Null")))
+@@ -1348,6 +1393,7 @@ void UAO_OnlineSessionSubsystem::UnmuteAllRemoteTalker()
+ 
+ void UAO_OnlineSessionSubsystem::MuteAllDeadRemoteTalker()
+ {
++	if (IsNullOSS()) { return; }
+ 	AO_LOG(LogJM, Log, TEXT("Start"));
+ 
+ 	UWorld* World = GetWorld();
+@@ -1382,6 +1428,7 @@ void UAO_OnlineSessionSubsystem::MuteAllDeadRemoteTalker()
+ 
+ bool UAO_OnlineSessionSubsystem::IsRemotePlayerTalking(APlayerState* PS)
+ {
++	if (IsNullOSS()) { return false; }
+ 	AO_LOG(LogJM, Log, TEXT("Start"));
+ 
+ 	IOnlineVoicePtr VoiceInterface = GetOnlineVoiceInterface();
+@@ -1404,6 +1451,7 @@ bool UAO_OnlineSessionSubsystem::IsRemotePlayerTalking(APlayerState* PS)
+ 
+ void UAO_OnlineSessionSubsystem::UpdateVoiceMember(AAO_PlayerState* ChangedPlayerState)
+ {
++	if (IsNullOSS()) { return; }
+ 	AO_LOG(LogJM, Log, TEXT("Start"));
+ 
+ 	if (!AO_ENSURE(ChangedPlayerState, TEXT("Changed PS is nullptr")))

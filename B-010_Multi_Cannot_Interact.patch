@@ -1,0 +1,13 @@
+diff --git a/Source/AO/Private/Interaction/Component/AO_InteractionComponent.cpp b/Source/AO/Private/Interaction/Component/AO_InteractionComponent.cpp
+index 7a84eb8..906e6e9 100644
+--- a/Source/AO/Private/Interaction/Component/AO_InteractionComponent.cpp
++++ b/Source/AO/Private/Interaction/Component/AO_InteractionComponent.cpp
+@@ -160,7 +160,7 @@ void UAO_InteractionComponent::OnInteractPressed()
+ 	
+ 	if (CurrentInteractTarget)
+ 	{
+-		ServerTriggerInteract_Implementation(CurrentInteractTarget);
++		ServerTriggerInteract(CurrentInteractTarget);
+ 	}
+ }
+ 

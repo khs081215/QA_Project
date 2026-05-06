@@ -1,0 +1,33 @@
+diff --git a/Source/AO/Private/Player/PlayerController/AO_PlayerController_InGameBase.cpp b/Source/AO/Private/Player/PlayerController/AO_PlayerController_InGameBase.cpp
+index 02669ba..f2c32b2 100644
+--- a/Source/AO/Private/Player/PlayerController/AO_PlayerController_InGameBase.cpp
++++ b/Source/AO/Private/Player/PlayerController/AO_PlayerController_InGameBase.cpp
+@@ -163,17 +163,7 @@ void AAO_PlayerController_InGameBase::Tick(float DeltaTime)
+ {
+ 	Super::Tick(DeltaTime);
+ 
+-	if (bIsCheckingVoiceCleanup)
+-	{
+-		AO_LOG_ROLE(LogJM, Log, TEXT("Inner bIsCheckingVoiceCleanup while Tick"));
+ 
+-		if (IsVoiceFullyCleanedUp())
+-		{
+-			bIsCheckingVoiceCleanup = false;
+-			Server_NotifyReadyForTravel();
+-			AO_LOG(LogJM, Log, TEXT("All Voice Resources Cleaned Up."));
+-		}
+-	}
+ }
+ 
+ void AAO_PlayerController_InGameBase::OnPossess(APawn* InPawn)
+@@ -450,8 +440,8 @@ void AAO_PlayerController_InGameBase::Client_PrepareForTravel_Implementation(con
+ 	}
+ 	
+ 	CleanupAudioResource();
+-	bIsCheckingVoiceCleanup = true;
+-	
++	Server_NotifyReadyForTravel();
++
+ 	AO_LOG(LogJM, Log, TEXT("End"));
+ }
+ 

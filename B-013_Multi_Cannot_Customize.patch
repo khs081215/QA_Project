@@ -1,0 +1,17 @@
+diff --git a/Source/AO/Private/Character/Customizing/AO_DummyCustomComponent.cpp b/Source/AO/Private/Character/Customizing/AO_DummyCustomComponent.cpp
+index e475849..6d7b2a1 100644
+--- a/Source/AO/Private/Character/Customizing/AO_DummyCustomComponent.cpp
++++ b/Source/AO/Private/Character/Customizing/AO_DummyCustomComponent.cpp
+@@ -49,6 +49,12 @@ void UAO_DummyCustomComponent::SaveCustomizingData()
+ 
+ 	PlayerState->CharacterCustomizingData = CustomizingData;
+ 	PlayerState->ServerRPC_SetCharacterCustomizingData(CustomizingData);
++	
++	TObjectPtr<UAO_CustomizingComponent> CustomizingComponent=Player->GetComponentByClass<UAO_CustomizingComponent>();
++	checkf(CustomizingComponent, TEXT("Component is invalid"));
++	
++	CustomizingComponent->ServerRPC_ChangeCustomizing(CustomizingData);
++	UE_LOG(LogTemp,Warning,TEXT("DummySaveCustomizingDataRPC"));
+ }
+ 
+ void UAO_DummyCustomComponent::ChangeCharacterMeshInBlueprint(ECharacterMesh NewMeshType, USkeletalMesh* NewMesh, float NewCapsuleHeight)

@@ -1,0 +1,15 @@
+diff --git a/Source/AO/Private/Player/PlayerState/AO_PlayerState.cpp b/Source/AO/Private/Player/PlayerState/AO_PlayerState.cpp
+index 7acf366..6864bf4 100644
+--- a/Source/AO/Private/Player/PlayerState/AO_PlayerState.cpp
++++ b/Source/AO/Private/Player/PlayerState/AO_PlayerState.cpp
+@@ -179,6 +179,10 @@ void AAO_PlayerState::OnRep_IsAlive()
+ 
+ void AAO_PlayerState::OnRep_DeathCount()
+ {
++	if (UAO_DelegateManager* DM = GetGameInstance()->GetSubsystem<UAO_DelegateManager>())
++	{
++		DM->OnStatisticsUpdated.Broadcast();
++	}
+ }
+ 
+ void AAO_PlayerState::AddDeathCount()

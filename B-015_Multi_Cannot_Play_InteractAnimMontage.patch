@@ -1,0 +1,13 @@
+diff --git a/Source/AO/Private/Interaction/Component/AO_InteractionComponent.cpp b/Source/AO/Private/Interaction/Component/AO_InteractionComponent.cpp
+index 906e6e9..f2d200a 100644
+--- a/Source/AO/Private/Interaction/Component/AO_InteractionComponent.cpp
++++ b/Source/AO/Private/Interaction/Component/AO_InteractionComponent.cpp
+@@ -176,7 +176,7 @@ void UAO_InteractionComponent::MulticastPlayInteractionMontage_Implementation(
+ 	FTransform WarpTransform, 
+ 	FName WarpName)
+ {
+-	if (MontageToPlay)
++	if (!MontageToPlay)
+ 	{
+ 		return;
+ 	}

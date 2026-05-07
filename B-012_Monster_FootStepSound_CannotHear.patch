@@ -1,0 +1,22 @@
+diff --git a/Source/AO/Private/AI/Animation/AO_AN_AIFootstep.cpp b/Source/AO/Private/AI/Animation/AO_AN_AIFootstep.cpp
+index d9ebdfa..2f3e54b 100644
+--- a/Source/AO/Private/AI/Animation/AO_AN_AIFootstep.cpp
++++ b/Source/AO/Private/AI/Animation/AO_AN_AIFootstep.cpp
+@@ -35,7 +35,7 @@ void UAO_AN_AIFootstep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
+ 			Sound,
+ 			Owner->GetActorLocation(),
+ 			FRotator::ZeroRotator,
+-			0.f,
++			VolumeMultiplier,
+ 			PitchMultiplier,
+ 			0.0f,
+ 			AttenuationSettings
+@@ -55,7 +55,7 @@ void UAO_AN_AIFootstep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
+ 			Sound,
+ 			Owner->GetActorLocation(),
+ 			FRotator::ZeroRotator,
+-			0.f,
++			VolumeMultiplier,
+ 			PitchMultiplier
+ 		);
+ 	}

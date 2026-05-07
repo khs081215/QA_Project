@@ -1,0 +1,13 @@
+diff --git a/Source/AO/Private/Puzzle/Actor/Cannon/AO_CannonElement.cpp b/Source/AO/Private/Puzzle/Actor/Cannon/AO_CannonElement.cpp
+index f1c72ef..469c700 100644
+--- a/Source/AO/Private/Puzzle/Actor/Cannon/AO_CannonElement.cpp
++++ b/Source/AO/Private/Puzzle/Actor/Cannon/AO_CannonElement.cpp
+@@ -488,7 +488,7 @@ void AAO_CannonElement::OnInspectionEnded()
+ 
+ void AAO_CannonElement::MulticastPlayFireEffect_Implementation()
+ {
+-    if (!HasAuthority()) { return; }
++    if (HasAuthority()) { return; }
+ 
+     if (!MuzzlePoint)
+     {
